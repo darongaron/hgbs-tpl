@@ -6,7 +6,7 @@ hgbs-tpl
 * scssに手を入れてデザイン変更することが前提なのでhugoテンプレート化はせず
 
 インストール
-============
+------------
 
 ```
 $ brew install hugo
@@ -15,20 +15,8 @@ $ npm install
 ```
 
 今後のnodeのアップデートでgulpプラグインが動かなくなるかもしれないので
-nodeは下記のようにインストールしたほうがいいかもしれない
+念のためnode5にしています
 
-```
-$ brew install homebrew/versions/node5
-```
-
-hugo serverの起動
------------------
-
-hugoでドラフトの文章も表示して監視
-
-```
-hugo server -D -w
-```
 
 ディレクトリの説明
 -------------
@@ -50,4 +38,5 @@ layouts/
 │   └── sidebar.html
 └── rss.xml
 ```
+
 

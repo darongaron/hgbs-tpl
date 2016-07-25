@@ -11,7 +11,6 @@ var eslint      = require('gulp-eslint');
 var htmlmin     = require('gulp-htmlmin');
 var gulpIf      = require('gulp-if');
 var imagemin    = require('gulp-imagemin');
-// var minifyCss   = require('gulp-minify-css');
 var sass        = require('gulp-sass');
 var sourcemaps  = require('gulp-sourcemaps');
 var uglify      = require('gulp-uglify');
@@ -25,35 +24,60 @@ var reload    = browserSync.reload;
 var bootstrap = path.join(__dirname, '/node_modules/bootstrap-sass/');
 var isWatch   = false;
 var isRelease = false;
+var changedHugofile = '';
 
+// hugoで開発時に出力させるbaseurl
+var baseurlDev = '/';
+var hugoDevCmd = 'hugo -b="' + baseurlDev + '"';
+// var hugoDevCmd = 'hugo -v -b="' + baseurlDev + '"';
 var gPath = {
   // gulp.srcに指定するパス 基本はappもしくはmodulesを指定する
   src: {
-    html: [],
-    css: '',
-    js: '',
-    image: '',
+    // hugoで利用する
+    hugo: [
+      'archetypes/**/*',
+      'config.toml',
+      'content/**/*',
+      'data/**/*',
+      'layouts/**/*'
+    ],
+    hugoWatch: ['public/**/*'],
+    // 縮小する前のhtml(hugoのhtml出力先)
+    // htmlを圧縮する際に指定
+    html: 'public/**/*.html',
+    // 大元になるscss
+    css: ['app/styles/main.scss'],
+    // 変更を監視するcss
+    cssWatch: ['app/styles/**/*.{scss,css}'],
+    // jsのコンパイル対象を指定
+    js: './app/scripts/main.js',
+    // jsでlint対象を指定
+    jsLint: ['app/scripts/**/*.js', 'gulpfile.js'],
+    // browserify で指定するファイル名
+    jsName: 'main.js',
+    img: 'app/images/**/*',
     modules: [bootstrap + 'assets/fonts/**/*'],
     // app直下でdistにコピーするものを指定
     copy: ['app/*', '!app/*.html']
   },
   // 開発出力用パス 基本はhugoで監視する.tmp以下に出力する
+  // html img はsrcもしくはpublic以下をそのまま利用する
   dev: {
-    html: [],
-    css: '',
-    js: '',
-    image: '',
+    css: '.tmp/styles',
+    js: '.tmp/scripts',
     modules: '.tmp/modules'
   },
   // 本番出力用パス
   dist: {
-    html: [],
-    css: '',
-    js: '',
-    image: '',
+    html: 'dist',
+    css: 'dist/styles',
+    js: 'dist/scripts',
+    img: 'dist/images',
     modules: 'dist/modules',
     copy: 'dist'
-  }
+  },
+  // cleanタスクで削除するファイルを指定
+  clean: ['.tmp', 'public', 'dist/*', '!dist/.git']
 };
 
 gulp.task('watchify', function() {
@@ -85,10 +109,9 @@ gulp.task('copy:nm', function() {
   ));
 });
 
-gulp.task('hugo', function() {
-  // var cmd = gulpIf(watching, 'hugo -Dv -b="//localhost:3000"', 'hugo');
-  // var cmd = gulpIf(isWatch, 'hugo -Dv -b="//localhost:3000"', 'hugo');
-  var cmd = 'hugo';
+// hugoでビルドするさせるタスク
+gulp.task('hugo:build', function() {
+  var cmd = gulpIf(isRelease, 'hugo', hugoDevCmd);
   exec(cmd, {
     encoding: 'utf-8',
     stdio: [0, 1, 2]
@@ -96,13 +119,20 @@ gulp.task('hugo', function() {
   });
 });
 
+// hugoでビルド後、browserSyncが動いてればリロードする
+gulp.task('hugo', ['hugo:build'], function() {
+  return gulp.src(changedHugofile)
+  .pipe(gulpIf(browserSync.active, reload({stream: true})));
+  // .pipe(gulpIf(browserSync.active, reload));
+});
+
 gulp.task('clean', function(cb) {
-  del(['.tmp', 'dist/*', '!dist/.git'], {dot: true});
+  del(gPath.clean, {dot: true});
   cb();
 });
 
 gulp.task('styles', function() {
-  return gulp.src(['app/styles/main.scss'])
+  return gulp.src(gPath.src.css)
   .pipe(gulpIf(!isRelease, sourcemaps.init()))
   .pipe(sass({
     precision: 10,
@@ -115,12 +145,12 @@ gulp.task('styles', function() {
   // (ベンダープレフィックスが除去されてしまう)
   .pipe(gulpIf(isRelease, cssnano({autoprefixer: false})))
   .pipe(gulpIf(!isRelease, sourcemaps.write()))
-  .pipe(gulpIf(isRelease, gulp.dest('dist/styles'), gulp.dest('.tmp/styles')))
+  .pipe(gulpIf(isRelease, gulp.dest(gPath.dist.css), gulp.dest(gPath.dev.css)))
   .pipe(gulpIf(browserSync.active, reload({stream: true})));
 });
 
 gulp.task('lint', function() {
-  return gulp.src(['app/scripts/**/*.js', 'gulpfile.js'])
+  return gulp.src(gPath.src.jsLint)
   .pipe(eslint({
     extends: 'google',
     env: {browser: true, node: true, jquery: true},
@@ -136,17 +166,17 @@ gulp.task('lint', function() {
 });
 
 gulp.task('images', function() {
-  return gulp.src('app/images/**/*')
+  return gulp.src(gPath.src.img)
   .pipe(cache(imagemin({
     progressive: true,
     interlaced: true
   })))
-  .pipe(gulp.dest('dist/images'));
+  .pipe(gulp.dest(gPath.dist.img));
 });
 
 gulp.task('scripts', function() {
   var browserifyOpts = {
-    entries: './app/scripts/main.js'
+    entries: gPath.src.js
     // basedir: './',
   };
 
@@ -162,7 +192,7 @@ gulp.task('scripts', function() {
     var time = process.hrtime();
     return bundler
     .bundle()
-    .pipe(source('main.js'))
+    .pipe(source(gPath.src.jsName))
     .pipe(buffer())
     .pipe(gulpIf(!isRelease, sourcemaps.init({loadMaps: true})))
     .pipe(gulpIf(!isRelease, sourcemaps.write()))
@@ -173,13 +203,14 @@ gulp.task('scripts', function() {
     .pipe(gulpIf(!isRelease, sourcemaps.write()))
     .pipe(gulpIf(
       isRelease,
-      gulp.dest('dist/scripts'),
-      gulp.dest('.tmp/scripts')
+      gulp.dest(gPath.dist.js),
+      gulp.dest(gPath.dev.js)
     ))
     .on('end', function() {
       console.log('Bundled[ s, ns ]:', process.hrtime(time));
     })
-    .pipe(gulpIf(browserSync.active, browserSync.stream({once: true})));
+    // .pipe(gulpIf(browserSync.active, browserSync.stream({once: true})));
+    .pipe(gulpIf(browserSync.active, reload({stream: true})));
   };
   bundler.on('update', execBundle);
   return execBundle();
@@ -190,9 +221,10 @@ gulp.task('scripts:watch', function(cb) {
 });
 
 gulp.task('html', function() {
-  return gulp.src('app/**/*.html')
+  return gulp.src(gPath.src.html)
   .pipe(htmlmin({
-    removeComments: true,
+    // removeComments: true,
+    removeComments: false,
     collapseWhitespace: true,
     collapseBooleanAttributes: true,
     removeAttributeQuotes: true,
@@ -202,16 +234,20 @@ gulp.task('html', function() {
     removeStyleLinkTypeAttributes: true,
     removeOptionalTags: true
   }))
-  .pipe(gulp.dest('dist'));
+  .pipe(gulp.dest(gPath.dist.html));
 });
 
+// サーバーを起動せずにhtml, css, js開発
 gulp.task('watch', ['copy:nm', 'scripts:watch', 'styles'], function() {
-  gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.{scss,css}'], ['styles']);
-  gulp.watch(['app/scripts/**/*.js', 'gulpfile.js'], ['lint']);
-  gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(gPath.src.cssWatch, ['styles']);
+  gulp.watch(gPath.src.jsLint, ['lint']);
+  var hugoWatcher = gulp.watch(gPath.src.hugo, ['hugo']);
+  hugoWatcher.on('change', function(evt) {
+    changedHugofile = evt.path;
+  });
 });
 
+// サーバーを起動して開発
 gulp.task('serve', ['copy:nm', 'scripts:watch', 'styles', 'hugo'], function() {
   browserSync({
     notify: false,
@@ -221,19 +257,13 @@ gulp.task('serve', ['copy:nm', 'scripts:watch', 'styles', 'hugo'], function() {
     port: 3000
   });
 
-  gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.{scss,css}'], ['styles']);
-  gulp.watch(['app/scripts/**/*.js', 'gulpfile.js'], ['lint']);
-  gulp.watch(['app/images/**/*'], reload);
-  gulp.watch([
-    'archetypes/**/*',
-    'config.toml',
-    'content/**/*',
-    'data/**/*',
-    'layouts/**/*'
-  ], ['hugo']);
-  gulp.watch(['public/**/*'], reload);
+  gulp.watch(gPath.src.cssWatch, ['styles']);
+  gulp.watch(gPath.src.jsLint, ['lint']);
+  gulp.watch(gPath.src.img, reload);
+  var hugoWatcher = gulp.watch(gPath.src.hugo, ['hugo']);
+  hugoWatcher.on('change', function(evt) {
+    changedHugofile = evt.path;
+  });
 });
 
 gulp.task('serve:dist', ['default'], function() {

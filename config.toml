@@ -1,5 +1,6 @@
 # baseurl = "http://replace-this-with-your-hugo-site.com/"
 baseurl = "/"
+# baseurl = ""
 # 相対パスを有効にする
 # canonifyurls = true
 # languageCode = "en-us"
