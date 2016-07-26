@@ -1,6 +1,5 @@
 # baseurl = "http://replace-this-with-your-hugo-site.com/"
 baseurl = "/"
-# baseurl = ""
 # 相対パスを有効にする
 # canonifyurls = true
 # languageCode = "en-us"
@@ -8,3 +7,6 @@ languageCode = "ja"
 # title = "My New Hugo Site"
 title = "Your Site Name"
 
+[params]
+#  disqusShortname = "your disqus id." # optional
+#  highlight = true # optional

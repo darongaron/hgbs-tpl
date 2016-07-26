@@ -4,6 +4,7 @@ draft = false
 title = "post2 title"
 tags = [ "tag1", "tag2" ]
 categories = [ "category1", "category2" ]
+image = "img02.jpg" # optional
 +++
 
 post

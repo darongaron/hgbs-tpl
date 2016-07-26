@@ -1,8 +1,14 @@
 <footer class="l-footer">
-  <p>{{ with .Site.Copyright | safeHTML }}{{ . }}{{ else }}&copy; {{ $.Site.LastChange.Year }} {{ if isset $.Site.Params "Author" }}{{ $.Site.Params.Author }}{{ else }}{{ .Site.Title }}{{ end }}{{ end }}</p>
+  <p>
+  {{ with .Site.Copyright | safeHTML }}{{ . }}
+  {{ else }}&copy; {{ $.Site.LastChange.Year }} {{ if isset $.Site.Params "Author" }}{{ $.Site.Params.Author }}{{ else }}{{ .Site.Title }}{{ end }}{{ end }}
+  </p>
 </footer>
 
 <script src="{{ .Site.BaseURL }}scripts/main.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
 
 {{ with .Site.Params.GoogleAnalyticsUserID }}
 <script>
