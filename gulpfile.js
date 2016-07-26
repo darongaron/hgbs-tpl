@@ -266,6 +266,7 @@ gulp.task('serve', ['copy:nm', 'scripts:watch', 'styles', 'hugo'], function() {
   });
 });
 
+// 本番資産の確認
 gulp.task('serve:dist', ['default'], function() {
   browserSync({
     notify: false,
@@ -278,7 +279,7 @@ gulp.task('serve:dist', ['default'], function() {
 
 gulp.task('default', ['clean', 'release'], function(cb) {
   runSequence(
-    'styles',
+    ['styles', 'hugo'],
     ['lint', 'html', 'scripts', 'images', 'copy', 'copy:nm'],
     cb
   );
