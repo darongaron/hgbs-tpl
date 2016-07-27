@@ -66,6 +66,35 @@
                 </div>
               </section>
 
+              <section>
+                <!-- content-nav -->
+                <nav class="content-nav ">
+                  <ul class="content-nav__links">
+                    {{ if .PrevInSection }}
+                    <li class="content-nav__item">
+                      <p class="content-nav__label">前の記事</p>
+                      <p class="button button--article-nav">
+                      <a class="button__link" href="{{.PrevInSection.RelPermalink}}"><i class="icon icon-arrow-left"></i>{{ .PrevInSection.Title }}</a>
+                      </p>
+                    </li>
+                    {{ end }}
+                    {{ if .NextInSection }}
+                    <li class="content-nav__item">
+                      <p class="content-nav__label">次の記事</p>
+                      <p class="button button--article-nav">
+                      <a class="button__link" href="{{.NextInSection.RelPermalink}}"><i class="icon icon-arrow-right"></i>{{ .NextInSection.Title }}</a>
+                      </p>
+                    </li>
+                    {{ end }}
+                  </ul>
+                  <div class="content-nav__menu">
+                    <p class="button button--article-nav button--article-nav--menu">
+                    <a class="button__link" href="/"><i class="icon icon-menu"></i>サイトトップへ</a>
+                    </p>
+                  </div>
+                </nav><!-- /content-nav -->
+              </section>
+
               {{ if and (ne .Site.Params.comment false) (ne .Params.comment false) }}
               {{ with .Site.Params.disqusShortname }}
               <section>

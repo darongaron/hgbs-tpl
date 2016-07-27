@@ -4,6 +4,8 @@ baseurl = "/"
 # canonifyurls = true
 # languageCode = "en-us"
 languageCode = "ja"
+# 日本語でSummaryを正しく表示する
+hasCJKLanguage = true
 # title = "My New Hugo Site"
 title = "Your Site Name"
 

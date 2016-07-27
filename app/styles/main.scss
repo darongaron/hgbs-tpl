@@ -1,8 +1,28 @@
 $icon-font-path: "../modules/bootstrap-sass/assets/fonts/bootstrap/";
 @import "bootstrap-custom-var";
 @import "bootstrap";
-@import "styles";
+// @import "styles";
 
 h2 {
   // color: blue;
 }
+
+/*
+.cont-img {
+  max-width: 300px;
+  max-height: 300px;
+  @media (max-width: $screen-xs-max) {
+    max-width: 150px;
+    max-height: 200px;
+  }
+  margin-top: 0px;
+  margin-bottom: 16px;
+  margin-right: 8px;
+  margin-left: 8px;
+
+}
+*/
+.sentence-img-h {}
+.sentence-img-w {}
+
+@import "_theme";
