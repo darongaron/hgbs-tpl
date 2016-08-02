@@ -1,6 +1,7 @@
 hgbs-tpl
 =========
 
+* 未完成
 * hugo gulp bootstrap scssを利用したテンプレード
 * IE8+に対応(ES6化しない)
 * scssに手を入れてデザイン変更することが前提なのでhugoテンプレート化はしない
