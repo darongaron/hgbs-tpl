@@ -1,8 +1,8 @@
 +++
-date = "2016-07-19T15:16:23+09:00"
+date = "2016-07-01T15:16:23+09:00"
 draft = false
 title = "記事タイトル"
-# description = ""
+description = "記事説明文(description)"
 categories = ["記事カテゴリー"]
 tags = ["記事タグ1", "記事タグ2"]
 # image = "image.jpg" # optional

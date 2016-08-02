@@ -1,58 +1,64 @@
 <aside class="site">
+	<div id="sidebar">
 
-  {{ if and .IsPage (ne .Params.toc false) }}
-  <section>
-    <header>Table Of Contents</header>
-    <div>{{ .TableOfContents }}</div>
-  </section>
-  {{ end }}
+		{{ if and .IsPage (ne .Params.toc false) }}
+		<section>
+			<header>Table Of Contents</header>
+			<div>{{ .TableOfContents }}</div>
+		</section>
+		{{ end }}
 
-  {{ if ne (len .Site.Menus) 0 }}
-  <section>
-    <header>Menu</header>
-    <div>
-      <nav class="p-menu">
-        {{ range .Site.Menus }}
-        <ul>
-          {{ range . }}
-          <li>
-            {{ if .HasChildren }}
-            <a href="#">{{ .Pre }} {{ .Name }}</a>
-            <ul>
-              {{ range .Children }}
-              <li><a href="{{ .URL }}">{{ .Name }}</a></li>
-              {{ end }}
-            </ul>
-          </li>
-          {{ else }}
-          <li><a href="{{ .URL }}">{{ .Pre }} {{ .Name }}</a></li>
-          {{ end }}
-          {{end}}
-        </ul>
-        {{end}}
-      </nav>
-    </div>
-  </section>
-  {{ end }}
+		{{ if ne (len .Site.Menus) 0 }}
+		<section>
+			<header>Menu</header>
+			<div>
+				<nav class="p-menu">
+					{{ range .Site.Menus }}
+					<ul>
+						{{ range . }}
+						<li>
+							{{ if .HasChildren }}
+							<a href="#">{{ .Pre }} {{ .Name }}</a>
+							<ul>
+								{{ range .Children }}
+								<li><a href="{{ .URL }}">{{ .Name }}</a></li>
+								{{ end }}
+							</ul>
+						</li>
+						{{ else }}
+						<li><a href="{{ .URL }}">{{ .Pre }} {{ .Name }}</a></li>
+						{{ end }}
+						{{end}}
+					</ul>
+					{{end}}
+				</nav>
+			</div>
+		</section>
+		{{ end }}
 
-  <section>
-    <header>新着記事</header>
-    <div>
-      {{ range first 10 .Site.Pages }}
-      {{ .Render "li" }}
-      {{ end }}
-    </div>
-  </section>
+		<section>
+			<header>新着記事</header>
+			<div>
+				{{/* range first 10 .Site.Pages */}}
+				{{ range first .Site.Params.latestPostsNum .Site.Pages }}
+				{{/* $latestPostsNum = with .Site.Params.latestPostsNum elese 10 end */}} 
+				{{/* range first (with (.Site.Params.latestPostsNum) else 10 end ) .Site.Pages */}}
+				{{/* range first .latestPostsNum .Site.Pages */}}
+				{{ .Render "li" }}
+				{{ end }}
+			</div>
+		</section>
 
-  {{ range $key, $value := .Site.Taxonomies }}
-  <section>
-    <header>{{ $key | singularize }}</header>
-    <div>
-      <ul>
-        {{ range first 10 $value.ByCount }}<li><a href="{{ $.Site.BaseURL}}{{ $key }}/{{ .Name | urlize }}">{{ .Name }}</a></li>{{ end }}
-      </ul>
-    </div>
-  </section>
-  {{ end }}
+		{{ range $key, $value := .Site.Taxonomies }}
+		<section>
+			<header>{{ $key | singularize }}</header>
+			<div>
+				<ul>
+					{{ range first 10 $value.ByCount }}<li><a href="{{ $.Site.BaseURL}}{{ $key }}/{{ .Name | urlize }}">{{ .Name }}</a></li>{{ end }}
+				</ul>
+			</div>
+		</section>
+		{{ end }}
 
+	</div>
 </aside>

@@ -1,3 +1,49 @@
+機能
+----
+
+*
+
+* 記事の一覧で記事のSummaryを表示しているが記事にDescriptionが設定されている場合にはDescriptionを表示する。 
+* keywordsが設定されていない場合はkeywordsのかわりにカテゴリーとタグをに設定されている値を出力する。それも設定されていなければkeywordsタグを出力しない。
+
+menuの設定
+----------
+
+### config.toml
+
+#### 各ページに飛ばす
+
+```
+[[menu.main]]
+    name = "Tools"
+    url = "/tools/"
+    pre = "<i class='fa fa-cogs'></i>"
+    weight = -25
+```
+
+#### 他のサイトに飛ばす
+
+```
+[[menu.main]]
+    parent = "themes"
+    name = "Theme Showcase"
+    url = "http://themes.gohugo.io"
+    weight = -170
+[[menu.main]]
+```
+
+### contents
+
+```
+menu: "main"
+```
+
+```
+[[menu.main]]
+  parent: extras
+weight: 60
+```
+
 ディレクトリの説明
 -------------
 
@@ -21,8 +67,8 @@ layouts/                              hugoのレイアウト
 │   ├── grid.html
 │   ├── li.html
 │   ├── list.html
-│   ├── single.html               基本レイアウト
-│   └── terms.html
+│   ├── single.html               記事ページレイアウト
+│   └── terms.html				  category,tag一覧ページレイアウト
 ├── index.html                     ホームページのレイアウト
 ├── partials                       部品レイアウト
 │   ├── footer.html
