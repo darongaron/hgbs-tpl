@@ -8,6 +8,7 @@ languageCode = "ja"
 hasCJKLanguage = true
 # title = "My New Hugo Site"
 title = "Your Site Name"
+# googleAnalytics = "UA-00000000-9"
 
 [params]
 paginate = 3

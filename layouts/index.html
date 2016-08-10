@@ -7,9 +7,6 @@
   <body>
     {{ partial "header.html" . }}
 
-	{{ if .IsHome }}
-
-	{{ if (.Paginator.HasPrev) }}
     <div class="jumbotron" style="background-image: url({{ $.Site.BaseURL }}images/default.jpg);">
       <h1>{{ .Site.Title }}</h1>
       <p>サイト説明</p>
@@ -51,9 +48,6 @@
 		<p>テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト</p>
 		<br>
 	</div>
-
-	{{ end }}
-	{{ end }}
 
     <div class="container">
       <div class="row">
