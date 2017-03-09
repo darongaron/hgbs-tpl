@@ -12,14 +12,50 @@ hgbs-tpl
 インストール
 ------------
 
+### hugoのインストール
+
+hugoがインストールされていない場合下記のようにインストールする
+
+#### goがインストールされているなら
+
 ```
+$ go get -u -v github.com/spf13/hugo
+```
+
+#### goがインストールされていなければ
+
+```sh
 $ brew install hugo
+```
+
+### nodeのインストール
+
+```
+$ brew install node
+```
+
+今後のnodeのアップデートでgulpプラグインが動かなくなる可能性がある
+もし動かなければ下記のようにnode5を指定する
+(最新の環境だとwarningが出るプラグインがいくつかあるが現時点では一応動く)
+
+```sh
 $ brew install homebrew/versions/node5
+```
+
+### gulpのインストール
+
+gulpがglobalにインストールされていなければインストールする
+
+```sh
+$ npm install --global gulp
+```
+
+### nodeパッケージをインストール
+
+```sh
 $ npm install
 ```
 
-今後のnodeのアップデートでgulpプラグインが動かなくなる可能性があるためnode5にしている
-(最新の環境だとwarningが出るプラグインがいくつかあるが現時点では一応動く)
 
 その他の使い方
 ------
