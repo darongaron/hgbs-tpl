@@ -95,7 +95,19 @@ gulp
 gulp serve:dist
 ```
 
+### コンテンツの追加
 
+下記のように```hugo new```コマンドで記事の追加が行える
+
+```
+$ hugo new post/good-to-great.md
+```
+
+下記のようにcontentディレクトリ以下にディレクトリごと作成される
+
+```
+content/post/good-to-great.md created
+```
 
 その他の使い方
 ------
