@@ -89,7 +89,7 @@ gulp
 
 本番資産をブラウザで表示させて確認する場合
 
-もしminifyなどにバグがあった場合に確認する
+もしminifyなどにバグがあった場合に確認できる
 
 ```sh
 gulp serve:dist
@@ -106,7 +106,7 @@ $ hugo new post/good-to-great.md
 下記のようにcontentディレクトリ以下にディレクトリごと作成される
 
 ```
-content/post/good-to-great.md created
+content/post/good-to-great.md
 ```
 
 その他の使い方
